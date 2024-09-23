@@ -9,7 +9,9 @@ INSERT INTO Relacionamento_Filmes (
     cnpj_distribuidora,
     publico
 )
-SELECT top 10
+
+-- Select funcionando
+SELECT top 1000
     c.id_cidade,
     g.tconst,
     t.chave_de_tempo,
@@ -143,3 +145,34 @@ END;
 
 -- Informar conclusão
 PRINT 'Inserção concluída com sucesso!';
+
+
+
+SELECT TOP 10
+    c.id_cidade,
+    g.tconst AS id_genero,
+    t.chave_de_tempo,
+    s.chave_da_sala,
+    a.Chave_de_Ator,
+    d.Chave_de_Diretor,
+    e.titulo_original,
+    COALESCE(e.cnpj_distribuidora, s.cnpj_distribuidora) AS cnpj_distribuidora,  
+    e.publico
+FROM 
+    Exibicao_de_Filmes e
+    LEFT JOIN Cidade c ON e.titulo_original = c.titulo_original
+    LEFT JOIN Genero g ON e.titulo_original = g.titulo_original
+    LEFT JOIN Quando t ON e.titulo_original = t.titulo_original AND e.data_exibicao = t.data_exibicao
+    LEFT JOIN Sala_de_Cinema s 
+        ON e.nome_da_sala = s.nome_da_sala
+        AND (e.cnpj_distribuidora = s.cnpj_distribuidora OR e.cnpj_distribuidora IS NULL)
+    LEFT JOIN Ator a ON g.tconst = a.tconst
+    LEFT JOIN Diretor d ON g.tconst = d.tconst
+WHERE 
+    e.publico IS NOT NULL
+    AND a.Chave_de_Ator IS NOT NULL   
+    AND d.Chave_de_Diretor IS NOT NULL  
+    AND g.tconst IS NOT NULL  
+    AND c.id_cidade IS NOT NULL  
+    AND t.chave_de_tempo IS NOT NULL  
+    AND s.chave_da_sala IS NOT NULL;  
