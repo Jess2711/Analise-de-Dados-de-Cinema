@@ -11,7 +11,7 @@ INSERT INTO Relacionamento_Filmes (
 )
 
 -- Select funcionando
-SELECT top 1000
+SELECT top 100
     c.id_cidade,
     g.tconst,
     t.chave_de_tempo,
@@ -19,7 +19,7 @@ SELECT top 1000
     a.Chave_de_Ator,
     d.Chave_de_Diretor,
     e.titulo_original,
-    COALESCE(e.cnpj_distribuidora, s.cnpj_distribuidora),  -- Tenta usar CNPJ de ambas as tabelas
+    COALESCE(e.cnpj_distribuidora, s.cnpj_distribuidora),  
     e.publico
 FROM 
     Exibicao_de_Filmes e
@@ -42,7 +42,7 @@ WHERE
 
 	EXEC sp_readerrorlog;
 
-	USE Data_Mart; -- Substitua pelo nome do seu banco de dados
+	USE Data_Mart; 
 GO
 
 -- Consulta para ver os arquivos de dados e log do banco
@@ -50,16 +50,16 @@ SELECT name AS NomeLogico, physical_name AS CaminhoFisico, type_desc AS Tipo
 FROM sys.master_files
 WHERE database_id = DB_ID(N'Data_Mart');
 
--- Verifique o nome lógico do log (pode ser diferente do exemplo abaixo)
+-- Verifica o nome lógico do log (pode ser diferente do exemplo abaixo)
 DBCC SQLPERF(LOGSPACE); 
 
--- Mude o banco para o modo SIMPLE para liberar os logs
+-- Muda o banco para o modo SIMPLE para liberar os logs
 ALTER DATABASE Data_Mart SET RECOVERY SIMPLE;
 
 -- Trunca o log de transações
 DBCC SHRINKFILE (Data_Mart_log, 1);  -- Nome do arquivo lógico de log
 
--- Volte o banco para o modo FULL se for necessário para futuras transações
+-- Volta o banco para o modo FULL se for necessário para futuras transações
 ALTER DATABASE Data_Mart SET RECOVERY FULL;
 
 
